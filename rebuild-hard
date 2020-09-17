@@ -1,0 +1,16 @@
+#!/bin/bash
+
+docker-compose stop;
+
+docker-compose rm --force;
+
+docker-compose build --no-cache
+
+docker-compose up -d
+
+docker-compose ps
+
+sleep 2
+
+docker-compose ps && sleep 1
+

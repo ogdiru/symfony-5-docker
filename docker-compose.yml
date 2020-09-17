@@ -1,0 +1,66 @@
+version: '3'
+
+# команды:
+# docker-compose.yml  php:7.0-fpm nginx
+# docker-compose stop
+# docker-compose rm --force
+# docker-compose build --no-cache
+# docker-compose up -d
+# docker-compose ps
+# docker-compose stop;
+# docker-compose rm --force
+# docker-compose build --no-cache
+# docker-compose up -d
+# docker-compose ps
+#
+# @nginx: https://hub.docker.com/_/nginx/
+# https://hub.docker.com/_/php/
+
+services:
+
+  ubuntu:
+    build: ubuntu
+    volumes:
+     - ../test.book:/mnt
+     - ./ubuntu/.bash_profile:/root/.bash_profile
+    networks:
+      network-s:
+        ipv4_address: 168.27.29.30
+
+  db:
+    image: postgres
+    volumes:
+    - pg-hdd:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=secret
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    networks:
+      network-s:
+        ipv4_address: 168.27.29.50
+
+  rabbitmq:
+    image: rabbitmq
+    networks:
+      network-s:
+        ipv4_address: 168.27.29.51
+
+  redis:
+    image: redis
+    volumes:
+    - redis-hdd-s:/data
+    networks:
+      network-s:
+          ipv4_address: 168.27.29.60
+
+volumes:
+  pg-hdd:
+    driver: local
+  redis-hdd-s:
+    driver: local
+
+networks:
+  network-s:
+    ipam:
+      driver: default
+      config:
+      - subnet: 168.27.29.0/24
