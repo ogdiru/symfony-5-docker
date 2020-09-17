@@ -28,6 +28,7 @@ RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" &&
 
 # symfony_installer
 RUN wget https://get.symfony.com/cli/installer -O - | bash
+    # + cp /root/.symfony/bin/symfony /usr/local/bin/symfony
 
 RUN apt-get update && apt-get install -y libzip-dev
 RUN docker-php-ext-install zip && docker-php-ext-enable zip
@@ -56,7 +57,28 @@ RUN docker-php-ext-enable amqp
 
 RUN mv composer.phar /usr/local/bin/composer
 
+RUN cp /root/.symfony/bin/symfony /usr/local/bin/symfony
+
+# RUN mkdir /root/.ssh
+COPY authorized_keys /root/.ssh/authorized_keys
+RUN chmod 0600 /root/.ssh/authorized_keys && chown root:root /root/.ssh/authorized_keys && chmod 0600 /root/.ssh
+
+RUN apt-get update && apt-get install -y ssh openssh-server
+RUN mkdir /var/run/sshd
+
+RUN echo 'root:secret' | chpasswd
+RUN sed -i 's/#*PermitRootLogin prohibit-password/PermitRootLogin yes/g' /etc/ssh/sshd_config
+RUN sed -i 's/#*LogLevel INFO/LogLevel DEBUG/g' /etc/ssh/sshd_config
+RUN sed -i 's/#PubkeyAuthentication yes/PubkeyAuthentication yes/g' /etc/ssh/sshd_config
+RUN sed -i 's/#PermitTunnel no/PermitTunnel yes/g' /etc/ssh/sshd_config
+RUN sed -i 's/#AllowAgentForwarding yes/AllowAgentForwarding yes/g' /etc/ssh/sshd_config
+RUN sed -i 's/#Port 22/Port 19922/g' /etc/ssh/sshd_config
+RUN sed -i 's/#AddressFamily any/AddressFamily any/g' /etc/ssh/sshd_config
+
+
 WORKDIR /mnt
 
-CMD ["sleep", "infinity"]
+#EXPOSE 22
+CMD ["/usr/sbin/sshd", "-D"]
+#CMD ["sleep", "infinity"]
 

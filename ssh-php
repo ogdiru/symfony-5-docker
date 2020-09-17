@@ -1,3 +1,5 @@
 #!/bin/bash
 
-docker-compose exec ubuntu bash
+ssh root@localhost -p 19922 -vvv
+#ssh root@localhost -p 22 -vvv
+# docker-compose exec ubuntu bash

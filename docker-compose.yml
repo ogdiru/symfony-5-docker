@@ -21,6 +21,8 @@ services:
     volumes:
      - ../test.book:/mnt
      - ./ubuntu/.bash_profile:/root/.bash_profile
+    ports:
+     - 19922:19922
     networks:
       network-s:
         ipv4_address: 168.27.29.30

@@ -1,0 +1,9 @@
+#!/bin/bash
+
+cat ~/.ssh/id_rsa.pub
+
+ls -lA ./ubuntu/
+
+cat ~/.ssh/id_rsa.pub > ./ubuntu/authorized_keys
+
+echo OK
